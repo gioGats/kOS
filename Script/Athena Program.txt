@@ -1,0 +1,9 @@
+The Athena Program:
+
+Athena-1: Tests launch scripts to a target's inclination.
+Athena-2: Tests establishing a transfer orbit, assuming an established parking orbit.
+Athena-3: Tests comms library.
+Athena-4: Tests launch to target plane, burn to transfer orbit, capture and adjust for landing.
+Athena-5: Expands Athena 4 to zero inclination at target orbit.
+Athena-6: Expands Athena 5 to test spot landing script.
+Athena-7: First manned Athena mission to Minmus!
