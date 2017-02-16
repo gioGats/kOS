@@ -1,3 +1,4 @@
+#TODO Update list from KSP launch
 KSP: 1.2.2 (Win64) - Unity: 5.4.0p4 - OS: Windows 10  (10.0.0) 64bit
 000_AT_Utils - 1.4.1
 Toolbar - 1.7.13
@@ -36,7 +37,10 @@ USI-LS - 0.5.22
 
 
 Manual Install
--SpaceX ITS
 -Field Training Facility
 -Training Laboratory
--kOS Prop Monitor
+-Space-Y (Select parts: service bays, landing legs, radial decouplers)
+-SpaceX ITS (Need rescale)
+
+Waiting to Install
+-kOS Prop Monitor (Need 1.2+ support)

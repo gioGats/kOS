@@ -1,26 +1,19 @@
 Phase 0 - Sandbox
--Test KPBS compatibility w/ Simple Construction
--Test RPM, Docking Alignment, kOSPropMonitor
+-Test KPBS compatibility w/ Simple Construction/Logistics
+-Test RPM, Docking Alignment
 -Test Feline Rovers
 -Test Simple Construction: Base, Rover, Rocket
 -Test StageRecovery: Powered and re-entry
 -Test LifeSupport
--Test ITS:
-	-Just too overpowered?
-	-Switching tank types/composition?
-	-Carrying actual cargo?
--Test Reusability Expansion for Dragon suitability
--Design production fleet:
-	-http://imgur.com/a/YG9IH
-	-Dragon Crew - Using Taurus HCV Mod (investigate powered landing, moduleManager patch for service bay)
-	-Dragon Cargo - Using Phoenix Industries Mod (investigate altering parts from KIS to containers)
-	-Falcon9-alike
-	-FalconHeavy-alike
-	-TAPE’s craft?
-	-Test cargo performance w/ NRAP
 -Launch script (KSC to 100km)
 -Re-Entry script (100km to KSC)
-
+-Design Production Fleet:
+	-Lifters:
+		-Falcon9 (25t to LKO)
+		-FalconHeavy (50t to LKO)
+		-Saturn (75t to LKO) http://imgur.com/a/YG9IH
+	-Payloads:
+		-Dragon (7 crew, 2yrs supplies for Kerbin Station)
 
 Phase 1 - LKO Ops
 —Start career w/ 2500 Science + 2.5m Funds
@@ -103,5 +96,3 @@ List of Scripts:
 -BoosterReturn
 -DirectMun
 -DirectMin
-
-

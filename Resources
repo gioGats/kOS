@@ -1,0 +1,19 @@
+Requirements:
+10.8 supplies/kerbal/day
+(0.0005 supplies/kerbal/second)
+(1.27 fertilizer/kerbal/day with greenhouse)
+	With an MPL for every 5 kerbals, need only 30% of the supplies
+	3.24 supplies/kerbal/day
+	0.38 fertilizer/kerbal/day
+216 ec/kerbal/day
+(0.01 ec/kerbal/second)
+
+Available Fertilizer Tanks:
+Fertilizer MiniPak: 100 Fertilizer, or 263 kerbal/days, or 37 days for a 7-kerbal crew
+Fertilizer Tank-1.25: 500 Fertilizer, 1316 kerbal/days or 188 7crew/days
+Fertilizer Tank-2.5: 4,500 Fertilizer, 11842 kerbal/days or 1692 7crew/days (4 years)
+Fertilizer Tank-3.75: 15,000 Fertilizer, 39474 kerbal/days or 5639 7crew/days
+
+Generating Fertilizer:
+ISRU - 1000 ore -> 1 fertilizer -> 8.5 supplies
+Algae Farm - 2.7 Mulch + 7.2 Ore -> 2.88 Fertilizer -> 24.48 supplies
