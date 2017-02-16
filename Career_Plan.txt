@@ -1,0 +1,107 @@
+Phase 0 - Sandbox
+-Test KPBS compatibility w/ Simple Construction
+-Test RPM, Docking Alignment, kOSPropMonitor
+-Test Feline Rovers
+-Test Simple Construction: Base, Rover, Rocket
+-Test StageRecovery: Powered and re-entry
+-Test LifeSupport
+-Test ITS:
+	-Just too overpowered?
+	-Switching tank types/composition?
+	-Carrying actual cargo?
+-Test Reusability Expansion for Dragon suitability
+-Design production fleet:
+	-http://imgur.com/a/YG9IH
+	-Dragon Crew - Using Taurus HCV Mod (investigate powered landing, moduleManager patch for service bay)
+	-Dragon Cargo - Using Phoenix Industries Mod (investigate altering parts from KIS to containers)
+	-Falcon9-alike
+	-FalconHeavy-alike
+	-TAPE’s craft?
+	-Test cargo performance w/ NRAP
+-Launch script (KSC to 100km)
+-Re-Entry script (100km to KSC)
+
+
+Phase 1 - LKO Ops
+—Start career w/ 2500 Science + 2.5m Funds
+-Station intercept (100km to 250km)
+-Station return (250km to 100km)
+-Basic station construction (lab, lifeSupport, docking)
+-Docking script
+(After phase 1, tested lifters w/ in-envelope cargo can “cheat” to basic station and land w/ StageRecovery)
+
+Phase 2 - HKO Ops
+-Mun/Min transfer script (100km to Mun/Min)
+-Direct launch Mun script
+-Direct launch Min script
+-Parking orbit script (fly-by to 50/30km/0inc)
+-Return script (MoonParking to Kerbin 100km-notInclined)
+(After phase 2, tested lifters w/ in-envelope cargo can “cheat” to MoonParking, KerbinParking, and land w/ stageRecovery
+
+Phase 3 - Minmus Ops
+-Minmus landing script
+-Minmus spot-landing script
+-Minmus ascent script
+-Station intercept (parking to station)
+-Station return (station to parking)
+-Map Minmus
+
+Phase 4 - Mun Ops
+-Mun landing script
+-Mun spot-landing script
+-Mun ascent script
+-Station intercept (parking to station)
+-Station return (station to parking)
+-Map Mun
+
+Phase 5 - Practical Expansion
+-Minmus Auto-Land script (from pre-established sub-orbital trajectory to a specific Biome)
+-Minmus Anywhere ascent and inclination correction to parking
+-Mun Auto-Land script (from pre-established sub-orbital trajectory to a specific Biome)
+-Mun Anywhere ascent and inclination correction to parking
+
+Phase 6 - Science collection
+-All Minmus biomes
+-All Mun biomes
+
+Phase 7 - Road to Colonization
+-Primary Kerbin Station
+-Mun Station
+-Minmus Station
+-Mun Base
+-Min Base
+-Test fluid functioning between
+(After phase 7, certified ships can “cheat” between stations and surface of Kerbin/Mun/Minmus)
+
+Phase 8 - Road to Exploration
+-Alarm transfer windows to all bodies
+-Certify suitable survey probes for all+satellites
+
+Phase 9 - Duna
+-???
+
+Reserved Orbits:
+KerbinParking (PKO) - 100km
+KerbinStation (SKO) - 250km
+MunParking (PMO) - 50km
+MunStation (SMO) - 75km
+MinParking (PMiO)- 30km
+MinStation (SMiO) - 50km
+
+Lifter Stages
+Name	| Mass to LKO
+
+Transfer Stages
+Name	| Mass to PMO	| Mass to PMiO
+
+
+List of Scripts:
+-Standard library: import, boot, missionPlanner
+-Launch
+-LaunchRecover
+-BoosterRecovery
+-BoosterReturn
+-DirectMun
+-DirectMin
+
+
