@@ -1,8 +1,4 @@
 Phase 0 - Sandbox
--Test KPBS compatibility w/ Simple Construction/Logistics
--Test LifeSupport
--Test Feline Rovers
--Test Simple Construction: Base, Rover, Rocket
 -Test StageRecovery: Powered and re-entry
 -Launch script (KSC to 100km)
 -Re-Entry script (100km to KSC)
