@@ -4,11 +4,8 @@ set volume():name to "upper_stage".
 if not exists("upper_stage:/lib/main.ks") { COPYPATH("0:/lib/main.ks", "upper_stage:/lib/main.ks"). }
 runoncepath("upper_stage:/lib/main.ks").
 
+require("launch/pre_launch.ks", True).
+require("launch/boost.ks", True).
+require("launch/upper_stage.ks", True).
 
-require('pre_launch.ks').
-require('boost.ks').
-require('upper_stage.ks').
-
-run once pre_launch.ks.
-run once boost.ks.
-run upper_stage.ks.
+Launch(True, 90, "", -1, True, True).

@@ -4,6 +4,7 @@ function Launch {
   parameter single_booster is True, launch_heading is 90, launch_target is "", max_twr is -1, log_out is False, verbose is False.
   set runmode to "pre-launch".
   set message to "Beginning pre-launch checks".
+  //TODO Request launch command from user.
   if log_out {
     log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed']," to ascent_telemetry.js.
     set start_time to time:seconds.
@@ -11,10 +12,9 @@ function Launch {
 
   until False {
     if runmode = "pre-launch" {
-      //TODO Request launch command from user.
       set target_pitch to 90.
       set target_heading to launch_heading.
-      lock steering to (target_pitch, target_heading).
+      lock steering to heading(target_heading, target_pitch).
       set target_throttle to 1.
       lock throttle to target_throttle.
       if launch_target <> "" { set Target to Orbitable(launch_target). }
@@ -34,14 +34,14 @@ function Launch {
     else if runmode = "boost" {
       set target_pitch to update_pitch().
       set target_heading to update_heading(launch_heading, launch_target).
-      set target_throttle to update_throttle().
+      set target_throttle to update_throttle(max_twr).
 
       if staging_check(single_booster) {
         local old_throttle is target_throttle.
         set target_throttle to 0.
-        wait 0.1.
+        wait 1.
         stage.
-        wait 0.1.
+        wait 1.
         // TODO Send activate message to booster CPU(s)
         set target_throttle to old_throttle.
         if single_booster { return. }
@@ -50,10 +50,10 @@ function Launch {
     }
     update_display(runmode, message).
     if log_out { update_log(verbose). }
-    }
+  }
   if log_out {
-    log "];" to ascent.js.
-    copy ascent.js to 0.
+    log "];" to ascent_telemetry.js.
+    upload("ascent_telemetry.js", True).
   }
 }
 
@@ -75,9 +75,9 @@ function update_pitch {
 
 function update_throttle {
   parameter target_twr is -1.
-  if (SHIP:APOAPSIS > 0.875*Ap) and (SHIP:APOAPSIS < 0.999*Ap) {
-      if ALT:RADAR < 60000 { set TVAL to max(0.05, 8*(1-SHIP:APOAPSIS/Ap)). }
-      else { set TVAL to max(0.2, 8*(1-SHIP:APOAPSIS/Ap)). }
+  if (SHIP:orbit:APOAPSIS > 0.875*Ap) and (SHIP:orbit:APOAPSIS < 0.999*Ap) {
+      if ALT:RADAR < 60000 { set TVAL to max(0.05, 8*(1-SHIP:orbit:APOAPSIS/Ap)). }
+      else { set TVAL to max(0.2, 8*(1-SHIP:orbit:APOAPSIS/Ap)). }
       }
   else if target_twr > 0 {
     return max(min(target_twr / Available_twr(), 1), 0).
@@ -90,32 +90,65 @@ function update_throttle {
 function staging_check {
   parameter last_booster is True.
   parameter error_margin is 0.25.
-  if ship:apoapsis >= 100000 { return True. }
-  if last_booster {
-    // TODO Calculate booster empty_mass
-    // TODO Cacluate booster current_mass
-    // TODO Calculate horizontal velocity
-    // return ((booster_remaining_dv is landing_isp * 9.807 * ln(current_mass/empty_mass)) < ((1 + error_margin)*(required_landing_dv + horizontal_spd))).
-    return False.
-  }
+  if ship:orbit:apoapsis >= 100000 { return True. }
   else {
-    set message to "ERROR: TRIPLE BOOSTER STAGING NOT AVAILABLE".
-    return False.
-    // FUTURE Handle multi_booster Staging
+    if last_booster { return booster_check("C"). }
+    else { return booster_check("L") or booster_check("R"). }
   }
+}
+
+function booster_check {
+  parameter booster, error_margin is 0.25.
+  local mass_ratio is booster_mass(booster).
+  local remaining is (landing_isp * 9.807 * ln(current_mass/empty_mass)).
+  local required is ((1 + error_margin) * (required_landing_dv + 2 * ship:groundspeed)).
+  if booster = "C" { local row is 15. }
+  else if booster = "L" { local row is 16.}
+  else if booster = "R" { local row is 17. }
+  else { local row is 18. }
+  print booster at (5, row).
+  print "|" at (13,row).
+  print round(remaining) at (15, row).
+  print "|" at (28,row).
+  print round(required) at (30, row).
+  return remaining < required.
+}
+
+function booster_mass {
+  parameter booster.
+  local dry_mass is 0.
+  local current_mass is 0.
+  for part in list parts {
+    if part:tag = booster {
+      local booster_root is part.
+      break.
+    }
+  }
+  for booster_part in booster_root:children {
+    set dry_mass to dry_mass + booster_part:drymass.
+    set current_mass to current_mass + booster_part:mass.
+  }
+  return current_mass/dry_mass.
 }
 
 function update_display {
   parameter runmode, message is "".
-  // TODO Print a bunch of info
+  print "Runmode: " + runmode at (5,4).
+  print "Tgt_Heading: " + round(target_heading, 2) at (5,5).
+  print "Tgt_Pitch: " + round(target_pitch, 2) at (5,6).
+  print "Tgt_Throttle: " + round(target_throttle, 2) at (5,7).
+  print "Message: " + message at (5,8).
+
+  print "Last Booster: " + single_booster at (5,10).
+  print "Apoapsis: " + round(ship:orbit:apoapsis) + "/100000" + at (5,11).
+  print "Periapsis: " + round(ship:orbit:Periapsis) + "/" + min_boost_pe at (5,12).
+  print "BOOSTER | REMAINING DV | REQUIRED DV" at (5,14).
   print(runmode).
   print(message).
-  // TODO Format this
 }
 
 function update_log {
   parameter verbose is False.
-  // TODO output to the log
   local output is "[".
 
   // Time
@@ -140,5 +173,5 @@ function update_log {
   set output to output + (ship:velocity:orbit:mag).
 
   set output to output + "],".
-  log output to ascent.js.
+  log output to ascent_telemetry.js.
 }

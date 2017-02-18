@@ -3,7 +3,7 @@
 
 // Global variables
 set runmode to "".
-set messge to "".
+set message to "".
 
 FUNCTION NOTIFY {
   PARAMETER message, echo is False.
@@ -77,5 +77,39 @@ FUNCTION MNV_EXEC_NODE {
   LOCK THROTTLE TO 0.
   UNLOCK STEERING.
 }
+
+FUNCTION ORBITAL_VELOCITY {
+    DECLARE PARAMETER Ap, Pe, Radius.
+    LOCAL mew IS constant:G * Kerbin:Mass.
+    LOCAL r IS Radius + Kerbin:radius.
+    LOCAL a IS (ap+pe+2*kerbin:radius)/2.
+
+    if Pe > 0.99 * Ap { RETURN sqrt((constant:G * Kerbin:Mass)/(Radius + Kerbin:radius)). }
+    else { RETURN sqrt((constant:G * Kerbin:Mass)*((2/(Radius + Kerbin:radius))-(1/((ap+pe+2*kerbin:radius)/2)))). }
+}
+
+FUNCTION AUTOPILOT {
+  // TODO Update for terminal I/O capabilities
+  NOTIFY("Maneuver autopilot initiated").
+  wait 2.
+  NOTIFY("RCS: Execute Maneuver. Brakes: Done").
+
+  SET done to FALSE.
+  ON BRAKES  { SET done to TRUE. }
+
+  SET rcsState TO RCS.
+  UNTIL done {
+    IF RCS <> rcsState {
+      SET rcsState TO RCS.
+      NOTIFY("Executing maneuver").
+      MNV_EXEC_NODE(TRUE).
+      NOTIFY("Done").
+    }
+    WAIT 0.1.
+  }
+
+  NOTIFY("Maneuver autopilot terminated").
+}
+
 
 Notify("Main function load successful.").
