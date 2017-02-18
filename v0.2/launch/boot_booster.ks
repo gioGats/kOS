@@ -3,5 +3,5 @@
 
 require('booster_recover.ks').
 
-//Wait for activate condition
+//TODO Wait for activate condition
 run booster_recover.ks.

@@ -2,7 +2,7 @@
 
 //Must handle inflight restart
 
-//  - Burn reverse heading until expected landing stops getting closer to target
-//  - Wait until vertical speed < 0
-//  - Orient surface retrograde
-//  - HoverSlam
+// TODO - Burn reverse heading until expected landing stops getting closer to target
+// TODO - Wait until vertical speed < 0
+// TODO - Orient surface retrograde
+// TODO - HoverSlam
