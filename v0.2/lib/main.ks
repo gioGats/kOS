@@ -6,72 +6,34 @@ set runmode to "".
 set messge to "".
 
 FUNCTION NOTIFY {
-  PARAMETER message.
-  HUDTEXT("kOS: " + message, 5, 2, 50, YELLOW, false).
-}
-
-// Detect whether a file exists on the specified volume
-FUNCTION HAS_FILE {
-  PARAMETER name.
-  PARAMETER vol.
-
-  SWITCH TO vol.
-  LIST FILES IN allFiles.
-  FOR file IN allFiles {
-    IF file:NAME = name {
-      SWITCH TO 1.
-      RETURN TRUE.
-    }
-  }
-
-  SWITCH TO 1.
-  RETURN FALSE.
+  PARAMETER message, echo is False.
+  HUDTEXT("kOS: " + message, 5, 2, 50, YELLOW, echo).
 }
 
 // Get a file from KSC
 FUNCTION DOWNLOAD {
-  PARAMETER name, overwrite is False.
-  if overwrite {
-    IF HAS_FILE(name, 1) {
-      DELETE name.
-    }
-    IF HAS_FILE(name, 0) {
-      COPY name FROM 0.
-    }
+  PARAMETER filename, overwrite is False.
+  if exists(volume:name + ":" + filename) {
+    if not overwrite { return. }
+    else { deletepath(volume:name + ":" + filename). }
   }
-  else {
-    if NOT (HAS_FILE(name, 1)) {
-      IF HAS_FILE(name, 0) {
-        COPY name FROM 0.
-      }
-    }
-  }
+  copypath("0:" + filename, volume:name + ":" + filename).
 }
 
 // Put a file on KSC
 FUNCTION UPLOAD {
-  PARAMETER name, overwrite is False.
-  if overwrite {
-    IF HAS_FILE(name, 0) {
-      SWITCH TO 0. DELETE name. SWITCH TO 1.
-    }
-    IF HAS_FILE(name, 1) {
-      COPY name TO 0.
-    }
+  PARAMETER filename, overwrite is False.
+  if exists("0:" + filename) {
+    if not overwrite { return. }
+    else { deletepath("0:" + filename). }
   }
-  else {
-    if NOT (HAS_FILE(name, 0)) {
-      IF HAS_FILE(name, 1) {
-        COPY name TO 0.
-      }
-    }
-  }
+  copypath(volume:name + ":" + filename, "0:" + filename).
 }
 
 function Require{
-  PARAMETER name, auto_run is False.
-  IF NOT HAS_FILE(name, 1) { DOWNLOAD(name). }
-  IF auto_run { runoncepath(name). }
+  PARAMETER filename, auto_run is False.
+  if not exists(volume:name + ":" + filename) { copypath("0:" + filename, volume:name + filename). }
+  if auto_run { runoncepath(filename). }
 }
 
 FUNCTION ORBITABLE {
@@ -115,3 +77,5 @@ FUNCTION MNV_EXEC_NODE {
   LOCK THROTTLE TO 0.
   UNLOCK STEERING.
 }
+
+Notify("Main function load successful.").
