@@ -101,7 +101,7 @@ function booster_check {
   parameter booster, error_margin is 0.25.
   local mass_ratio is booster_mass(booster).
   local remaining is (landing_isp * 9.807 * ln(current_mass/empty_mass)).
-  local required is ((1 + error_margin) * (required_landing_dv + 2 * ship:groundspeed)).
+  local required is ((1 + error_margin) * (required_landing_dv + 1.75 * ship:groundspeed)).
   if booster = "C" { local row is 15. }
   else if booster = "L" { local row is 16.}
   else if booster = "R" { local row is 17. }
