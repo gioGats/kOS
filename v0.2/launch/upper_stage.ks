@@ -3,7 +3,7 @@
 
 // Exit atmosphere commands
 // brakes on.
-// TODO Change to ag10 when action groups available
+// FUTURE Change to ag10 when action groups available
 
 //TODO - Circularize at Apoapsis
 //TODO - Fine tune parking orbit (100km x 100km with reasonable deviation)

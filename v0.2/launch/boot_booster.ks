@@ -2,7 +2,6 @@
 //Boot script for slave booster CPU on Recoverable Lifter
 //set volume():name to "upper_stage".
 //TODO Verify that volume name is automatically set to processor tag
-set this_cpu
 if not exists(volume():name + ":/lib/main.ks") { COPYPATH("0:/lib/main.ks", volume():name + ":/lib/main.ks"). }
 runoncepath(volume():name + ":/lib/main.ks").
 
@@ -14,15 +13,24 @@ if ship:status = "PRELAUNCH" {
   set booster_runmode to "prelaunch".
   when ship:status = "FLYING" THEN set booster_runmode to "boost".
 }
-// If there's a message in the queue, change your runmode to the message content.
 
-when activate_message() THEN {
-  booster_recover(booster_runmode).
-  preserve.
+else {
+  set booster_runmode to "unknown".
+  if ship:status = "PRELAUNCH" { set booster_runmode to "prelaunch". }
+  else if ship:status = "LANDED" { set booster_runmode to "prelaunch". }
+  // TODO determine if boostback or correction or hoverslam
 }
 
-function activate_message {
-  // TODO check message queue
-  // If message, set runmode to it's content and return true.
-  // Else, return false.
+when (not core:messages:empty) THEN {
+  if core:messages:pop():content:tostring = "boostback" {
+    set booster_runmode to "boostback".
+    booster_recover().
+  preserve.
+  }
+}
+
+when ship:status = "LANDED" {
+  set booster_runmode to "landed".
+
+  // TODO Shutdown proceedure
 }

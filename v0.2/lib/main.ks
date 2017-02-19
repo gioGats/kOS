@@ -50,13 +50,32 @@ FUNCTION ORBITABLE {
 }
 
 function Available_twr {
+  parameter pressure is -1.
   local total_thrust is 0.
   for en in (list engines) {
     if en:ignition = true and en:flameout = False {
-      set total_thrust to total_thrust + en:availablethrust.
+      if pressure = -1 { set total_thrust to total_thrust + en:availablethrust. }
+      else { set total_thrust to total_thrust + en:availablethrustat(pressure). }
     }
   }
   return total_thrust/ship:mass.
+}
+
+function Available_dv {
+  parameter pressure is -1
+  local dry_mass is 0.
+  local current_mass is 0.
+  for part in (list parts) {
+    set dry_mass to dry_mass + part:drymass.
+    set current_mass to current_mass + part:mass.
+  }
+  for en in (list engines) {
+    if en:ignition = true and en:flameout = False {
+      if pressure = -1 { return ln(current_mass/dry_mass)*9.807*en:isp. }
+      else { return ln(current_mass/dry_mass)*9.807*en:ispat(pressure). }
+      // FUTURE Actually determine cluster isp
+    }
+  }
 }
 
 // Execute the next node
