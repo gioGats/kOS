@@ -68,7 +68,7 @@
     return fitness_fn@.
   }
 
-  // TODO: There's a lot of shared code in these fitness functions. Probably
+  // REFTODO: There's a lot of shared code in these fitness functions. Probably
   // means some stuff can be merged / abstracted
   function periapsis_fit {
     parameter target_body, target_periapsis.

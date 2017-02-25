@@ -50,7 +50,7 @@ FUNCTION MUNAR_INSERTION {
     }
   }
 
-  // TODO Determine if equatorial crossing or Pe occurs first.
+  // REFTODO Determine if equatorial crossing or Pe occurs first.
 
   WARPTO(TIME:SECONDS + ETA:Periapsis - 20).
   lock steering to retrograde.
@@ -64,11 +64,11 @@ FUNCTION MUNAR_INSERTION {
     set tval to 0.
   }
 
-  // TODO Burn to zero inclination
+  // REFTODO Burn to zero inclination
 
-  // TODO Check if 0 inc around Minmus is -6 or 0 relative to Kerbin
+  // REFTODO Check if 0 inc around Minmus is -6 or 0 relative to Kerbin
 
-  // TODO Adjust ordering
+  // REFTODO Adjust ordering
 
   if (ship:periapsis < 10000) or (ship:apoapsis < 0) {
     if ship:apoapsis < 0 {

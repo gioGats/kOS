@@ -11,7 +11,7 @@ LOGTOFILEINIT(). //Logging is not yet functional
 set RUNMODE to 19.
 set BoostBackTimelimit to 145.//The amount of time it should take to coast back
     //horizontally after the boost back burn is complete.
-    //TODO: THIS MUST BE REPROGRAMED TO RUN DYNAMICALLY. THERE ARE TOO MANY OTHER VARIABLES TO PROGRAM THIS STATICALLY
+    //REFTODO: THIS MUST BE REPROGRAMED TO RUN DYNAMICALLY. THERE ARE TOO MANY OTHER VARIABLES TO PROGRAM THIS STATICALLY
 if ALT:RADAR < 170 {set RUNMODE to 1. stage.} //Probably just starting out.
 
 ON AG10 {SET RUNMODE to -1. } //End program

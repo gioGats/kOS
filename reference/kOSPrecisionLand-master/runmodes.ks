@@ -122,7 +122,7 @@ if runmode = 20 { //Boost Back
         }
     // if it will take less time to get to the LZ then it will to hit the ground, while also going in the generally correct direction, end burn
     if ((gs_distance(shipLatLng,landingtargetLATLNG) / SURFACESPEED) + 0) * 1.025 < fallTime + 0 and VANG( BoostBackVector, VELOCITY:SURFACE) < 45{ 
-        //TODO: Finish the above formula instead of fudging the BBTL
+        //REFTODO: Finish the above formula instead of fudging the BBTL
         //The plus 30 is the modifier for atmo drag
         set TVAL to 0. 
         set engineSafety to 1.

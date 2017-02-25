@@ -148,7 +148,7 @@ FUNCTION TIME_ASC_NODE {
         set t to (period/360)*arccos(abs(theta)/inc).
         }
     else {set period to SHIP:BODY:ROTATIONPERIOD.
-        set t to (period/360)*arccos(abs(theta-inc)/lat). //TODO: latitude
+        set t to (period/360)*arccos(abs(theta-inc)/lat). //REFTODO: latitude
         }
     
     set t to (period/360)*arccos(abs(theta)/inc).

@@ -1,7 +1,6 @@
 //boot_launch.ks
 //Boot script for master CPU on Recoverable Lifter
-//set volume():name to "upper_stage".
-//TODO Verify that volume name is automatically set to processor tag
+
 if not exists("upper_stage:/lib/main.ks") { COPYPATH("0:/lib/main.ks", "upper_stage:/lib/main.ks"). }
 runoncepath("upper_stage:/lib/main.ks").
 

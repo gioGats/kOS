@@ -121,7 +121,7 @@ declare function LOGTOFILEINIT{
     clearscreen.
     }
 
-//TODO: FINISH CONVERTING LOGTOFILE INTO A FUNCTION
+//REFTODO: FINISH CONVERTING LOGTOFILE INTO A FUNCTION
 declare function LOGTOFILE {
     //declare parameter inputList.
     if time > nextLogTime {
@@ -153,7 +153,7 @@ declare function GYROINIT{
     //set shipHeight to 1.2 - 1. //Dragon Capsule
     //set maxGeeTarget to 3.
 
-    //TODO: REMOVE THE HARD CODING
+    //REFTODO: REMOVE THE HARD CODING
     //Launch Parameters
     set tAP to 250000.
     set tPe to 250000.

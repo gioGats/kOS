@@ -1,6 +1,6 @@
 //booster_recover.ks
+//Function to aid in booster recovery.
 
-//Must handle inflight restart
 function booster_recover {
   until False {
     if booster_runmode = "prelaunch" or booster_runmode = "boost" or booster_runmode = "landed" {
@@ -43,7 +43,8 @@ function booster_recover {
       }
     }
     else if booster_runmode = "hoverslam" {
-      // TODO - HoverSlam
+      // TODO HoverSlam
+      // TODO If chutes, use them
     }
     else {
       print "Runmode error: " + booster_runmode:tostring.

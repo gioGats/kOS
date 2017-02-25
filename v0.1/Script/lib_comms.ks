@@ -4,12 +4,12 @@ FUNCTION ACTIVATE_COMMS {
   until ADDONS:RT:HASCONNECTION(SHIP) {
       for name in LIST("RTShortAntenna1", "longAntenna", "RTLongAntenna3", "RTLongAntenna2") {
         ACTIVATE_OMNI("", name).
-        wait 1.  //TODO Confirm loop exits correctly
+        wait 1.  //REFTODO Confirm loop exits correctly
         DEACTIVATE("", name).
       }
       for name in LIST("mediumDishAntenna", "RTShortDish2", "commDish", "RTLongDish2", "RTGigaDish2", "RTGigaDish1") {
         ACTIVATE_DISH("", name).
-        wait 1.  //TODO Confirm loop exits correctly
+        wait 1.  //REFTODO Confirm loop exits correctly
         DEACTIVATE("", name).
       }
   }
@@ -45,7 +45,7 @@ FUNCTION ACTIVATE_DISH {
   PARAMETER tgt is "".
   PARAMETER name is "".
   IF tgt = "" {
-    local tgtList is LIST("Kerbin", "KSC", "Atlas-2-1", "Atlas-2-2"). //TODO Verify correct ship names
+    local tgtList is LIST("Kerbin", "KSC", "Atlas-2-1", "Atlas-2-2"). //REFTODO Verify correct ship names
   }
   ELSE {
     local tgtList is LIST(tgt).
@@ -93,7 +93,7 @@ FUNCTION DEACTIVATE {
     if guesses:length > 0 {
       set ant to guesses[0].
       set antM to ant:getModule("ModuleRTAntenna").
-      antM:DOEVENT("deactivate").  //TODO Confirm proper module command
+      antM:DOEVENT("deactivate").  //REFTODO Confirm proper module command
     }
   }
   ELSE IF name != "" {
@@ -101,7 +101,7 @@ FUNCTION DEACTIVATE {
     if guesses:length > 0 {
       local ant is guesses[0].
       local antM is ant:getModule("ModuleRTAntenna").
-      antM:DOEVENT("deactivate").  //TODO Confirm proper module command
+      antM:DOEVENT("deactivate").  //REFTODO Confirm proper module command
     }
   }
   ELSE {

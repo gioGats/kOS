@@ -15,28 +15,28 @@ function main {
 }
 
 function perform_ascent {
-  // TODO
+  // REFTODO
 }
 
 function perform_circularization {
-  // TODO
+  // REFTODO
 }
 
 function transfer_to {
   parameter body.
-  // TODO
+  // REFTODO
 }
 
 function perform_powered_descent {
-  // TODO
+  // REFTODO
 }
 
 function gather_science {
-  // TODO
+  // REFTODO
 }
 
 function perform_unpowered_descent {
-  // TODO
+  // REFTODO
 }
 
 main().

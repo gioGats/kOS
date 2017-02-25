@@ -122,7 +122,7 @@
     return fitness.
   }
 
-  // TODO: circular_fitness and capture_fitness should be merged. They only
+  // REFTODO: circular_fitness and capture_fitness should be merged. They only
   // differ in start time.
   function capture_fitness {
     parameter data.

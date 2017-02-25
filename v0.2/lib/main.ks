@@ -126,9 +126,7 @@ FUNCTION AUTOPILOT {
     }
     WAIT 0.1.
   }
-
   NOTIFY("Maneuver autopilot terminated").
 }
-
 
 Notify("Main function load successful.").

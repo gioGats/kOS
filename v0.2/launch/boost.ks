@@ -4,7 +4,17 @@ function Launch {
   parameter single_booster is True, launch_heading is 90, launch_target is "", max_twr is -1, log_out is False, verbose is False.
   set runmode to "pre-launch".
   set message to "Beginning pre-launch checks".
-  //TODO Request launch command from user.
+
+  print "Pre-Launch calculations complete." at (5,4).
+  print "Press 'enter' to being the launch countdown." at (5,5).
+  until False {
+    terminalinput:clear().
+    if (terminal:input:haschar) {
+      if terminal:input:GetChar() = terminal:input:enter {
+        break.
+      }
+    }
+  }
   if log_out {
     log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed']," to ascent_telemetry.js.
     set start_time to time:seconds.
@@ -20,6 +30,7 @@ function Launch {
       if launch_target <> "" { set Target to Orbitable(launch_target). }
       stage.
       set runmode to "liftoff".
+      set message to "Liftoff".
     }
     else if runmode = "liftoff" {
       if ship:altiude > 1000 {

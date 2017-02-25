@@ -1,7 +1,6 @@
 //boot_booster.ks
 //Boot script for slave booster CPU on Recoverable Lifter
-//set volume():name to "upper_stage".
-//TODO Verify that volume name is automatically set to processor tag
+
 if not exists(volume():name + ":/lib/main.ks") { COPYPATH("0:/lib/main.ks", volume():name + ":/lib/main.ks"). }
 runoncepath(volume():name + ":/lib/main.ks").
 
