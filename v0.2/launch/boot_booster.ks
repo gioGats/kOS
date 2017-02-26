@@ -17,19 +17,20 @@ else {
   set booster_runmode to "unknown".
   if ship:status = "PRELAUNCH" { set booster_runmode to "prelaunch". }
   else if ship:status = "LANDED" { set booster_runmode to "prelaunch". }
-  // TODO determine if boostback or correction or hoverslam
+  // FUTURE determine if boostback or correction or hoverslam
+  // Only needed in the event of an in-flight restart
 }
 
 when (not core:messages:empty) THEN {
   if core:messages:pop():content:tostring = "boostback" {
     set booster_runmode to "boostback".
     booster_recover().
-  preserve.
   }
+  preserve.
 }
 
 when ship:status = "LANDED" {
   set booster_runmode to "landed".
-
-  // TODO Shutdown proceedure
+  shutdown.
+  // Future Shutdown proceedure
 }

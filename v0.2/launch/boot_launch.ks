@@ -9,3 +9,4 @@ require("launch/boost.ks", True).
 require("launch/upper_stage.ks", True).
 
 Launch(True, 90, "", -1, True, True).
+Coast().

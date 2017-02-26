@@ -4,7 +4,7 @@ clearscreen.
 if not exists(volume():name + ":/lib/main.ks") {COPYPATH("0:/lib/main.ks", volume():name + ":/lib/main.ks").}
 runoncepath(volume():name + ":/lib/main.ks").
 
-local mission_script is "/missions/" + "".   //TODO Add Mission name
+local mission_script is "/missions/" + core:tag.
 Require(mission_script, True).
 local mission_success is True.
 

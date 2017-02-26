@@ -1,13 +1,42 @@
 //upper_stage.ks
 //
+function coast {
+  // Exit atmosphere commands
+  when (ship:Altitude > 50000) then { brakes on. }
+  // FUTURE Change to ag10 when action groups available
+  // when (ship:Altitude > 50000) then { ag10 on. }
 
-// Exit atmosphere commands
-// brakes on.
-// FUTURE Change to ag10 when action groups available
+  Raise_pe().
 
-//TODO - Circularize at Apoapsis
-//TODO - Fine tune parking orbit (100km x 100km with reasonable deviation)
-//FUTURE - Warp to deorbit point
-//TODO - Deploy payload, and send activate message to Payload CPU
-//FUTURE - Deorbit
-//FUTURE - Recovery
+  // FUTURE - Fine tune parking orbit (100km x 100km with reasonable deviation)
+  // FUTURE - Warp to deorbit point
+
+  for p in (list processors) {
+    if p:connection:isconnected {
+      p:connection:sendMessage("payload").
+    }
+  }
+  stage.
+
+  lock steering to ship:north.
+  lock throttle to 0.1.
+  wait 1.
+  lock steering to ship:retrograde.
+  lock throttle to 1.
+  wait 20.
+  shutdown.
+
+  // FUTURE - Smart deorbit
+
+  // FUTURE - Recovery
+
+}
+
+fuction raise_pe {
+  PARAMETER Pe is ship:apoapsis.
+  local v0 is CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
+  local v1 is CALC(Ship:Apoapsis,Pe,Ship:Apoapsis).
+  local dv is v1 - v0.
+  set nd to node(time:seconds+eta:apoapsis,0,0,dv).
+  add nd.
+}

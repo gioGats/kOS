@@ -14,6 +14,7 @@ function Launch {
         break.
       }
     }
+    wait 0.1.
   }
   if log_out {
     log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed']," to ascent_telemetry.js.
@@ -49,11 +50,15 @@ function Launch {
 
       if staging_check(single_booster) {
         local old_throttle is target_throttle.
+        for p in (list processors) {
+          if p:connection:isconnected {
+            p:connection:sendMessage("boostback").
+          }
+        }
         set target_throttle to 0.
         wait 1.
         stage.
         wait 1.
-        // TODO Send activate message to booster CPU(s)
         set target_throttle to old_throttle.
         if single_booster { return. }
         else { set single_booster to True. }
@@ -143,6 +148,7 @@ function booster_mass {
 
 function update_display {
   parameter runmode, message is "".
+  clearscreen.
   print "Runmode: " + runmode at (5,4).
   print "Tgt_Heading: " + round(target_heading, 2) at (5,5).
   print "Tgt_Pitch: " + round(target_pitch, 2) at (5,6).
@@ -153,8 +159,6 @@ function update_display {
   print "Apoapsis: " + round(ship:orbit:apoapsis) + "/100000" + at (5,11).
   print "Periapsis: " + round(ship:orbit:Periapsis) + "/" + min_boost_pe at (5,12).
   print "BOOSTER | REMAINING DV | REQUIRED DV" at (5,14).
-  print(runmode).
-  print(message).
 }
 
 function update_log {

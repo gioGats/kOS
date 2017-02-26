@@ -108,25 +108,24 @@ FUNCTION ORBITAL_VELOCITY {
 }
 
 FUNCTION AUTOPILOT {
-  // TODO Update for terminal I/O capabilities
   NOTIFY("Maneuver autopilot initiated").
-  wait 2.
-  NOTIFY("RCS: Execute Maneuver. Brakes: Done").
 
-  SET done to FALSE.
-  ON BRAKES  { SET done to TRUE. }
-
-  SET rcsState TO RCS.
-  UNTIL done {
-    IF RCS <> rcsState {
-      SET rcsState TO RCS.
-      NOTIFY("Executing maneuver").
-      MNV_EXEC_NODE(TRUE).
-      NOTIFY("Done").
+  until False {
+    terminalinput:clear().
+    if (terminal:input:haschar) {
+      local input is terminal:input:GetChar()
+      if input = terminal:input:enter {
+        NOTIFY("Executing maneuver").
+        MNV_EXEC_NODE(TRUE).
+        NOTIFY("Done").
+      }
+      else if input is terminal:input:backspace {
+        NOTIFY("Maneuver autopilot terminated").
+        break.
+      }
     }
-    WAIT 0.1.
+    wait 0.1.
   }
-  NOTIFY("Maneuver autopilot terminated").
 }
 
 Notify("Main function load successful.").
