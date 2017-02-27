@@ -1,7 +1,11 @@
 function recursive_compile_files {
-  parameter directory.
-  for volumeitem in directory:files {
-    if volumeitem:isfile {compile volumeitem.}
-    else {recursive_compile_files(volumeitem).}}}
+  parameter vd.
+  for vi in vd:list() {
+    if vi:isfile {compile vi:name.}
+    else {recursive_compile_files(vi).}}}
 
-recursive_compile_files(archive).
+
+for vi in archive:files:values {
+  if vi:isfile {compile vi:name.}
+  else {recursive_compile_files(vi).}
+}

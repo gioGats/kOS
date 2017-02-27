@@ -30,10 +30,20 @@ FUNCTION UPLOAD {
   copypath(volume:name + ":" + filename, "0:" + filename).
 }
 
-function Require{
+function Require {
   PARAMETER filename, auto_run is False.
-  if not exists(volume:name + ":" + filename) { copypath("0:" + filename, volume:name + filename). }
-  if auto_run { runoncepath(filename). }
+  if exists(core:volume:name + ":" + filename) {
+    if auto_run { runoncepath(filename). }
+    return True.
+  }
+  else if exists("0:" + filename) {
+    copypath("0:" + filename, core:volume:name + filename).
+    if auto_run { runoncepath(filename). }
+    return True
+  }
+  else {
+    return False.
+  }
 }
 
 FUNCTION ORBITABLE {

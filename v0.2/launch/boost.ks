@@ -134,7 +134,7 @@ function booster_mass {
   local dry_mass is 0.
   local current_mass is 0.
   for part in list parts {
-    if part:tag = booster {
+    if (part:tag = booster) and not (part:hasfield("bootfilename")) {
       local booster_root is part.
       break.
     }

@@ -1,12 +1,11 @@
 //boot_deployed.ks
 clearscreen.
 
-if not exists(volume():name + ":/lib/main.ks") {COPYPATH("0:/lib/main.ks", volume():name + ":/lib/main.ks").}
-runoncepath(volume():name + ":/lib/main.ks").
+if not exists(core:volume:name + ":/lib/main.ks") {COPYPATH("0:/lib/main.ks", core:volume:name + ":/lib/main.ks").}
+runoncepath(core:volume:name + ":/lib/main.ks").
 
 local mission_script is "/missions/" + core:tag.
-Require(mission_script, True).
-local mission_success is True.
+local mission_success is Require(mission_script, True).
 
 print "Enter boot preference: " at (5,9).
 if mission_success {print "1 - Mission Script" at (5,5).}
@@ -25,5 +24,5 @@ until False {
     else if input = "4" {shutdown.}
     else {print "Invalid input, enter again." at (5,9).}
   }
-  wait 0.
+  wait 0.1.
 }

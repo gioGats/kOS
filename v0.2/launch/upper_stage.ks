@@ -13,7 +13,7 @@ function coast {
 
   for p in (list processors) {
     if p:connection:isconnected {
-      p:connection:sendMessage("payload").
+      p:connection:sendMessage("deploy").
     }
   }
   stage.
