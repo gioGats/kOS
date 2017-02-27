@@ -32,7 +32,7 @@ when (not core:messages:empty) THEN {
   preserve.
 }
 
-when ship:status = "LANDED" {
+when ship:status = "LANDED" THEN {
   set booster_runmode to "landed".
   shutdown.
   // Future Shutdown proceedure

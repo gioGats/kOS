@@ -11,6 +11,8 @@
 
 
 ##### Program Sequence
+- run all boot scripts:
+  - 
 - run pre_launch.ks
   - Estimate available UpperStage dv
   - Estimate minimum acceptable boost periapsis

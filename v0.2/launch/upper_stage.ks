@@ -10,8 +10,8 @@ function coast {
 
   // FUTURE - Fine tune parking orbit (100km x 100km with reasonable deviation)
   // FUTURE - Warp to deorbit point
-
-  for p in (list processors) {
+  list processors in ps.
+  for p in ps {
     if p:connection:isconnected {
       p:connection:sendMessage("deploy").
     }
@@ -32,7 +32,7 @@ function coast {
 
 }
 
-fuction raise_pe {
+function raise_pe {
   PARAMETER Pe is ship:apoapsis.
   local v0 is CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
   local v1 is CALC(Ship:Apoapsis,Pe,Ship:Apoapsis).

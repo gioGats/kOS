@@ -50,7 +50,8 @@ function Launch {
 
       if staging_check(single_booster) {
         local old_throttle is target_throttle.
-        for p in (list processors) {
+        list processors in ps.
+        for p in ps {
           if p:connection:isconnected {
             p:connection:sendMessage("boostback").
           }
@@ -133,7 +134,8 @@ function booster_mass {
   parameter booster.
   local dry_mass is 0.
   local current_mass is 0.
-  for part in list parts {
+  list parts in pts.
+  for part in pts {
     if (part:tag = booster) and not (part:hasfield("bootfilename")) {
       local booster_root is part.
       break.

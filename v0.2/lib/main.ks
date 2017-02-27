@@ -39,7 +39,7 @@ function Require {
   else if exists("0:" + filename) {
     copypath("0:" + filename, core:volume:name + filename).
     if auto_run { runoncepath(filename). }
-    return True
+    return True.
   }
   else {
     return False.
@@ -62,7 +62,8 @@ FUNCTION ORBITABLE {
 function Available_twr {
   parameter pressure is -1.
   local total_thrust is 0.
-  for en in (list engines) {
+  list engines in ens.
+  for en in ens {
     if en:ignition = true and en:flameout = False {
       if pressure = -1 { set total_thrust to total_thrust + en:availablethrust. }
       else { set total_thrust to total_thrust + en:availablethrustat(pressure). }
@@ -72,14 +73,16 @@ function Available_twr {
 }
 
 function Available_dv {
-  parameter pressure is -1
+  parameter pressure is -1.
   local dry_mass is 0.
   local current_mass is 0.
-  for part in (list parts) {
+  list parts in pts.
+  for part in pts {
     set dry_mass to dry_mass + part:drymass.
     set current_mass to current_mass + part:mass.
   }
-  for en in (list engines) {
+  list engines in ens.
+  for en in ens {
     if en:ignition = true and en:flameout = False {
       if pressure = -1 { return ln(current_mass/dry_mass)*9.807*en:isp. }
       else { return ln(current_mass/dry_mass)*9.807*en:ispat(pressure). }
@@ -123,13 +126,13 @@ FUNCTION AUTOPILOT {
   until False {
     terminalinput:clear().
     if (terminal:input:haschar) {
-      local input is terminal:input:GetChar()
+      local input is terminal:input:GetChar().
       if input = terminal:input:enter {
         NOTIFY("Executing maneuver").
         MNV_EXEC_NODE(TRUE).
         NOTIFY("Done").
       }
-      else if input is terminal:input:backspace {
+      else if input = terminal:input:backspace {
         NOTIFY("Maneuver autopilot terminated").
         break.
       }
