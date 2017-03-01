@@ -52,6 +52,7 @@ function Launch {
       set target_heading to update_heading(launch_heading, launch_target).
       set target_throttle to update_throttle(max_twr).
 
+      //TODO Add a staging check
       if ship:orbit:apoapsis >= 100000 {
         local dv is CALC(Ship:Apoapsis,Ship:Apoapsis,Ship:Apoapsis) - CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
         set nd to node(time:seconds+eta:apoapsis,0,0,dv).

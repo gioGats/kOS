@@ -3,6 +3,8 @@
 ### Rated Performance
 | Vessel Name | Inline Size | Configuration | Payload to LKO (100km x 100km) |
 | ----------- | ----------- | ------------- | ------------------------------ |
+| ----------- | 1.25m       | Single        | ?                              |
+| ----------- | 1.25m       | Triple        | ?                              |
 | ----------- | 2.5m        | Single        | 25t                            |
 | ----------- | 2.5m        | Triple        | 50t                            |
 | ----------- | 3.75m       | Single        | 75t                            |
@@ -12,7 +14,7 @@
 
 ##### Program Sequence
 - run all boot scripts:
-  - 
+  -
 - run pre_launch.ks
   - Estimate available UpperStage dv
   - Estimate minimum acceptable boost periapsis
