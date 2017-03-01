@@ -1,4 +1,8 @@
-//boost.ks
+//record_lift.ks
+
+set core:volume:name to core:tag.
+if not exists(core:volume:name + ":/lib/main.ks") { COPYPATH("0:/lib/main.ks", core:volume:name + ":/lib/main.ks"). }
+runoncepath(core:volume:name + ":/lib/main.ks").
 
 function Launch {
   parameter single_booster is True, launch_heading is 90, launch_target is "", max_twr is -1, log_out is False, verbose is False.
@@ -48,21 +52,10 @@ function Launch {
       set target_heading to update_heading(launch_heading, launch_target).
       set target_throttle to update_throttle(max_twr).
 
-      if staging_check(single_booster) {
-        local old_throttle is target_throttle.
-        list processors in ps.
-        for p in ps {
-          if p:connection:isconnected {
-            p:connection:sendMessage("boostback").
-          }
-        }
-        set target_throttle to 0.
-        wait 1.
-        stage.
-        wait 1.
-        set target_throttle to old_throttle.
-        if single_booster { break. }
-        else { set single_booster to True. }
+      if ship:orbit:apoapsis >= 100000 {
+        local dv is CALC(Ship:Apoapsis,Ship:Apoapsis,Ship:Apoapsis) - CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
+        set nd to node(time:seconds+eta:apoapsis,0,0,dv).
+        add nd.
       }
     }
     update_display(runmode, message).
@@ -102,50 +95,6 @@ function update_throttle {
     // Maybe vector dot product code from v0.1?
   }
   else { return 1. }
-}
-
-function staging_check {
-  parameter last_booster is True.
-  parameter error_margin is 0.25.
-  if ship:orbit:apoapsis >= 100000 { return True. }
-  else {
-    if last_booster { return booster_check("C"). }
-    else { return booster_check("L") or booster_check("R"). }
-  }
-}
-
-function booster_check {
-  parameter booster, error_margin is 0.25.
-  local remaining is (landing_isp * 9.807 * ln(booster_mass(booster))).
-  local required is ((1 + error_margin) * (required_landing_dv + 1.75 * ship:groundspeed)).
-  if booster = "C" { local row is 15. }
-  else if booster = "L" { local row is 16.}
-  else if booster = "R" { local row is 17. }
-  else { local row is 18. }
-  print booster at (5, row).
-  print "|" at (13,row).
-  print round(remaining) at (15, row).
-  print "|" at (28,row).
-  print round(required) at (30, row).
-  return remaining < required.
-}
-
-function booster_mass {
-  parameter booster.
-  local dry_mass is 0.
-  local current_mass is 0.
-  list parts in pts.
-  for part in pts {
-    if (part:tag = booster) and not (part:hasfield("bootfilename")) {
-      local booster_root is part.
-      break.
-    }
-  }
-  for booster_part in booster_root:children {
-    set dry_mass to dry_mass + booster_part:drymass.
-    set current_mass to current_mass + booster_part:mass.
-  }
-  return current_mass/dry_mass.
 }
 
 function update_display {
@@ -191,3 +140,6 @@ function update_log {
   set output to output + "],".
   log output to ascent_telemetry.js.
 }
+
+//Run Launch
+Launch(True, 90, "", -1, True, True).
