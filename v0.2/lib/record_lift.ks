@@ -8,20 +8,25 @@ function Launch {
   parameter single_booster is True, launch_heading is 90, launch_target is "", max_twr is -1, log_out is False, verbose is False.
   set runmode to "pre-launch".
   set message to "Beginning pre-launch checks".
-
+  clearscreen.
+  print "Available Twr: " + Available_twr() at (5,3).
   print "Pre-Launch calculations complete." at (5,4).
   print "Press 'enter' to being the launch countdown." at (5,5).
+  // TODO Update other input loops
+  terminal:input:clear().
   until False {
-    terminalinput:clear().
     if (terminal:input:haschar) {
       if terminal:input:GetChar() = terminal:input:enter {
+        print "Beginning launch sequence." at (5,6).
         break.
       }
+      else { terminal:input:clear(). }
     }
     wait 0.1.
   }
+  clearscreen.
   if log_out {
-    log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed']," to ascent_telemetry.js.
+    log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed']," to "0:/ascent_telemetry.js".
     set start_time to time:seconds.
   }
 
@@ -38,11 +43,11 @@ function Launch {
       set message to "Liftoff".
     }
     else if runmode = "liftoff" {
-      if ship:altiude > 1000 {
+      if ship:altitude > 1000 {
         set message to "Begin trajectory guidance".
         set runmode to "boost".
       }
-      else if ship:altiude > 100 {
+      else if ship:altitude > 100 {
         set message to "Tower clear".
         set target_heading to 88.
       }
@@ -63,9 +68,9 @@ function Launch {
     if log_out { update_log(verbose). }
   }
   if log_out {
-    log "];" to ascent_telemetry.js.
-    upload("ascent_telemetry.js", True).
+    log "];" to "0:/ascent_telemetry.js".
   }
+  wait 0.1.
 }
 
 function update_heading {
@@ -81,17 +86,18 @@ function update_pitch {
   // i.e. steepen trajectory if running low on fuel
   // flatten trajectory if extra
   // But really, just get to the the minimum orbit required
+  // TODO Rewrite pitch function - Way too shallow of pitch
   return -115.23935 * (alt:radar / 100000)^0.4095114 + 88.963.
 }
 
 function update_throttle {
   parameter target_twr is -1.
-  if (SHIP:orbit:APOAPSIS > 0.875*Ap) and (SHIP:orbit:APOAPSIS < 0.999*Ap) {
-      if ALT:RADAR < 60000 { set TVAL to max(0.05, 8*(1-SHIP:orbit:APOAPSIS/Ap)). }
-      else { set TVAL to max(0.2, 8*(1-SHIP:orbit:APOAPSIS/Ap)). }
+  if (SHIP:orbit:APOAPSIS > 0.875*100000) and (SHIP:orbit:APOAPSIS < 0.999*100000) {
+      if ALT:RADAR < 60000 { set TVAL to max(0.05, 8*(1-SHIP:orbit:APOAPSIS/100000)). }
+      else { set TVAL to max(0.2, 8*(1-SHIP:orbit:APOAPSIS/100000)). }
       }
   else if target_twr > 0 {
-    return max(min(target_twr / Available_twr(), 1), 0).
+    return max(min(target_twr / Available_twr(), 1), 0.2).
     // FUTURE Do something smarter
     // Maybe vector dot product code from v0.1?
   }
@@ -105,12 +111,10 @@ function update_display {
   print "Tgt_Heading: " + round(target_heading, 2) at (5,5).
   print "Tgt_Pitch: " + round(target_pitch, 2) at (5,6).
   print "Tgt_Throttle: " + round(target_throttle, 2) at (5,7).
-  print "Message: " + message at (5,8).
-
-  print "Last Booster: " + single_booster at (5,10).
-  print "Apoapsis: " + round(ship:orbit:apoapsis) + "/100000" + at (5,11).
-  print "Periapsis: " + round(ship:orbit:Periapsis) + "/" + min_boost_pe at (5,12).
-  print "BOOSTER | REMAINING DV | REQUIRED DV" at (5,14).
+  print "Apoapsis: " + round(ship:orbit:apoapsis) at (5,8).
+  print "Periapsis: " + round(ship:orbit:Periapsis) at (5,9).
+  print "Available_twr: " + round(Available_twr(), 2) at (5,10).
+  print "Message: " + message at (5,11).
 }
 
 function update_log {
@@ -139,8 +143,8 @@ function update_log {
   set output to output + (ship:velocity:orbit:mag).
 
   set output to output + "],".
-  log output to ascent_telemetry.js.
+  log output to "0:/ascent_telemetry.js".
 }
 
 //Run Launch
-Launch(True, 90, "", -1, True, True).
+Launch(True, 90, "", 2, True, True).
