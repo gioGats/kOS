@@ -83,6 +83,7 @@ function update_heading {
 }
 
 function update_pitch {
+  //TODO New pitch function
   // FUTURE modify based on booster configuration
   // i.e. steepen trajectory if running low on fuel
   // flatten trajectory if extra
