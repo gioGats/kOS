@@ -3,13 +3,15 @@
 ### Rated Performance
 | Vessel Name | Inline Size | Configuration | Payload to LKO (100km x 100km) |
 | ----------- | ----------- | ------------- | ------------------------------ |
-| ----------- | 1.25m       | Single        | ?                              |
-| ----------- | 1.25m       | Triple        | ?                              |
-| ----------- | 2.5m        | Single        | 25t                            |
-| ----------- | 2.5m        | Triple        | 50t                            |
-| ----------- | 3.75m       | Single        | 75t                            |
-| ----------- | 3.75m       | Triple        | 100t                           |
-
+| ----------- | 1.25m       | Single        | ??t                            |
+| ----------- | 1.25m       | Triple        | ??t/??t (direct/asparagus)     |
+| ----------- | 1.25m       | Quintuple     | ??t/??t (direct/asparagus)     |
+| ----------- | 2.5m        | Single        | ??t                            |
+| ----------- | 2.5m        | Triple        | ??t/??t (direct/asparagus)     |
+| ----------- | 2.5m        | Quintuple     | ??t/??t (direct/asparagus)     |
+| ----------- | 3.75m       | Single        | ??t                            |
+| ----------- | 3.75m       | Triple        | ??t                            |
+| ----------- | 3.75m       | Quintuple     | ??t/??t (direct/asparagus)     |
 
 
 ##### Program Sequence
@@ -59,3 +61,9 @@
 | 3     | CenterBooster | boot_booster.ks |
 | 4     | LeftBooster   | boot_booster.ks |
 | 5     | RightBooster  | boot_booster.ks |
+
+
+##### Direct vs. Asparagus Staging
+Under direct staging, no fuel crossfeed such that all cores stage at once from main payload, then stage from each other.  Staging occurs when trajectory is above upper-stage/payload minimums.
+Under asparagus staging (triple), stage L/R cores at recovery minimums.  Stage C core at upper-stage/payload minimums.  If recovery minimums, attempt recovery.  Else, boostback until at landing minimums.
+Under asparagus staging (quintuple), stage T/B cores at recovery minimums.  Stage L/R cores at recovery minimums.  Stage C core at upper-stage/payload minimums.  If recovery minimums, attempt recovery.  Else, boostback until at landing minimums.

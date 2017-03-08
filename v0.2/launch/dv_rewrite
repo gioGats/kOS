@@ -1,0 +1,7 @@
+y = 14.951x^(-0.686) is atmo drag multi function that returns 2 at 20km and 1 at 50km.
+
+Try ref launchtoCirc.ks.  It records lots of data, parce the csv for relevant stuff.
+
+Namely
+  What does groudspeed look like during ascent?
+  What does Pe look like during ascent?
