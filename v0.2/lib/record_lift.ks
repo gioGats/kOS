@@ -5,11 +5,12 @@ if not exists(core:volume:name + ":/lib/main.ks") { COPYPATH("0:/lib/main.ks", c
 runoncepath(core:volume:name + ":/lib/main.ks").
 
 function Launch {
-  parameter single_booster is True, launch_heading is 90, launch_target is "", max_twr is -1, log_out is False, verbose is False.
+  parameter single_booster is True, crossfeed is False, launch_heading is 90, launch_target is "", log_out is False, verbose is False.
   set runmode to "pre-launch".
   set message to "Beginning pre-launch checks".
   clearscreen.
-  print "Available Twr: " + Available_twr() at (5,3).
+  sas on.
+  rcs on.
   print "Pre-Launch calculations complete." at (5,4).
   print "Press 'enter' to being the launch countdown." at (5,5).
   // TODO Update other input loops
@@ -17,7 +18,6 @@ function Launch {
   until False {
     if (terminal:input:haschar) {
       if terminal:input:GetChar() = terminal:input:enter {
-        print "Beginning launch sequence." at (5,6).
         break.
       }
       else { terminal:input:clear(). }
@@ -26,7 +26,7 @@ function Launch {
   }
   clearscreen.
   if log_out {
-    log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed']," to "0:/ascent_telemetry.js".
+    log "var data = [['Time', 'Tgt_Heading', 'Tgt_Pitch', 'Tgt_Throttle', 'Altitude', 'Apoapsis', 'Periapsis', 'Vertical_Speed', 'Horizontal_Speed', 'Orbital Speed', 'Delta-V']," to "0:/ascent_telemetry.js".
     set start_time to time:seconds.
   }
 
@@ -35,7 +35,7 @@ function Launch {
       set target_pitch to 90.
       set target_heading to launch_heading.
       lock steering to heading(target_heading, target_pitch).
-      set target_throttle to 1.
+      set target_throttle to update_throttle(1.5).
       lock throttle to target_throttle.
       if launch_target <> "" { set Target to Orbitable(launch_target). }
       stage.
@@ -43,34 +43,45 @@ function Launch {
       set message to "Liftoff".
     }
     else if runmode = "liftoff" {
-      if ship:altitude > 1000 {
+      if ship:airspeed > 50 {
         set message to "Begin trajectory guidance".
-        set runmode to "boost".
+        set runmode to "gravity turn".
       }
-      else if ship:altitude > 100 {
+      else if ship:altitude > 50 {
         set message to "Tower clear".
         set target_heading to 88.
       }
     }
-    else if runmode = "boost" {
-      set target_pitch to update_pitch().
-      set target_heading to update_heading(launch_heading, launch_target).
-      set target_throttle to update_throttle(max_twr).
-
-      //TODO Add a staging check
-      if ship:orbit:apoapsis >= 100000 {
-        local dv is CALC(Ship:Apoapsis,Ship:Apoapsis,Ship:Apoapsis) - CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
-        set nd to node(time:seconds+eta:apoapsis,0,0,dv).
-        add nd.
+    else if runmode = "initiate gravity turn" {
+      set target_pitch to 85.
+      if (ship:altitude > 1000) or (ship:airspeed > 200) {
+        set runmode to "gravity turn".
       }
     }
+    else if runmode = "gravity turn" {
+      set target_pitch to ship:SRFPROGRADE:PITCH.
+      if (ship:altitude > 40000) {
+        set runmode to "boost".
+      }
+    }
+    else if runmode = "boost" {
+      set target_pitch to ship:PROGRADE:PITCH.
+      if ship:orbit:apoapsis >= 100000 {
+        break.
+      }
+    }
+    set target_heading to update_heading(launch_heading, launch_target).
+    set target_throttle to update_throttle(1.5)
     update_display(runmode, message).
     if log_out { update_log(verbose). }
+    wait 0.1.
   }
+  local dv is CALC(Ship:Apoapsis,Ship:Apoapsis,Ship:Apoapsis) - CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
+  set nd to node(time:seconds+eta:apoapsis,0,0,dv).
+  add nd.
   if log_out {
     log "];" to "0:/ascent_telemetry.js".
   }
-  wait 0.1.
 }
 
 function update_heading {
@@ -81,27 +92,33 @@ function update_heading {
   else { return input_heading. }
 }
 
-function update_pitch {
-  // FUTURE modify based on booster configuration
-  // i.e. steepen trajectory if running low on fuel
-  // flatten trajectory if extra
-  // But really, just get to the the minimum orbit required
-  // TODO Rewrite pitch function - Way too shallow of pitch
-  return -115.23935 * (alt:radar / 100000)^0.4095114 + 88.963.
-}
-
 function update_throttle {
   parameter target_twr is -1.
-  if (SHIP:orbit:APOAPSIS > 0.875*100000) and (SHIP:orbit:APOAPSIS < 0.999*100000) {
-      if ALT:RADAR < 60000 { set TVAL to max(0.05, 8*(1-SHIP:orbit:APOAPSIS/100000)). }
-      else { set TVAL to max(0.2, 8*(1-SHIP:orbit:APOAPSIS/100000)). }
-      }
-  else if target_twr > 0 {
-    return max(min(target_twr / Available_twr(), 1), 0.2).
-    // FUTURE Do something smarter
-    // Maybe vector dot product code from v0.1?
+  if (runmode = "gravity turn") or (runmode = "boost") {
+    local twr is ()(eta:apoapsis/-30) + 3).
+    return twr_throttle(twr).
   }
-  else { return 1. }
+  else if (ship:Apoapsis > 95000) {
+    if ALT:RADAR < 60000 {
+      set TVAL to max(0.05, 8*(1-(SHIP:orbit:APOAPSIS/100000))).
+    }
+    else {
+      set TVAL to max(0.2, 8*(1-(SHIP:orbit:APOAPSIS/100000))).
+    }
+  }
+  else {
+    return twr_throttle(target_twr).
+  }
+}
+
+function twr_throttle {
+  parameter target_twr is -1.
+  if target_twr > 0 {
+    return max(min(target_twr / Available_twr(), 1), 0).
+  }
+  else {
+    return 1.
+  }
 }
 
 function update_display {
@@ -116,11 +133,14 @@ function update_display {
   print "Available_twr: " + round(Available_twr(), 2) at (5,10).
   print "Message: " + message at (5,11).
 }
+FUNCTION single_stage_dv {
+  LIST ENGINES IN shipEngines.
+  RETURN shipEngines[0]:ISP * 9.81 * LN(SHIP:MASS / SHIP:DRYMASS).
+}
 
 function update_log {
   parameter verbose is False.
   local output is "[".
-
   // Time
   set output to output + (time:seconds - start_time) + ",".
   // Target heading
@@ -140,9 +160,9 @@ function update_log {
   // Horizontal speed
   set output to output + (ship:groundspeed) + ",".
   // Orbital Speed
-  set output to output + (ship:velocity:orbit:mag).
-
-  set output to output + "],".
+  set output to output + (ship:velocity:orbit:mag) + ",".
+  // Delta-V
+  set output to output + single_stage_dv() + "],".
   log output to "0:/ascent_telemetry.js".
 }
 
