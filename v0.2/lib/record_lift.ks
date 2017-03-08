@@ -71,7 +71,7 @@ function Launch {
       }
     }
     set target_heading to update_heading(launch_heading, launch_target).
-    set target_throttle to update_throttle(1.5)
+    set target_throttle to update_throttle(1.5).
     update_display(runmode, message).
     if log_out { update_log(verbose). }
     wait 0.1.
@@ -95,7 +95,7 @@ function update_heading {
 function update_throttle {
   parameter target_twr is -1.
   if (runmode = "gravity turn") or (runmode = "boost") {
-    local twr is ()(eta:apoapsis/-30) + 3).
+    local twr is ((eta:apoapsis/-30) + 3).
     return twr_throttle(twr).
   }
   else if (ship:Apoapsis > 95000) {
@@ -133,7 +133,8 @@ function update_display {
   print "Available_twr: " + round(Available_twr(), 2) at (5,10).
   print "Message: " + message at (5,11).
 }
-FUNCTION single_stage_dv {
+
+function single_stage_dv {
   LIST ENGINES IN shipEngines.
   RETURN shipEngines[0]:ISP * 9.81 * LN(SHIP:MASS / SHIP:DRYMASS).
 }
@@ -166,5 +167,4 @@ function update_log {
   log output to "0:/ascent_telemetry.js".
 }
 
-//Run Launch
 Launch(True, 90, "", 2, True, True).
