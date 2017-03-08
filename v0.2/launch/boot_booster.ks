@@ -4,7 +4,7 @@ set core:volume:name to core:tag.
 if not exists(core:volume:name + ":/lib/main.ks") { COPYPATH("0:/lib/main.ks", core:volume:name + ":/lib/main.ks"). }
 runoncepath(core:volume:name + ":/lib/main.ks").
 
-Require("booster_recover.ks", True).
+Require("/launch/booster_recover.ks", True).
 
 if ship:status = "PRELAUNCH" {
   set launchpad_position to ship:GEOPOSITION.

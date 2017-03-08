@@ -13,11 +13,11 @@ FUNCTION NOTIFY {
 // Get a file from KSC
 FUNCTION DOWNLOAD {
   PARAMETER filename, overwrite is False.
-  if exists(volume:name + ":" + filename) {
+  if exists(core:volume:name + ":" + filename) {
     if not overwrite { return. }
-    else { deletepath(volume:name + ":" + filename). }
+    else { deletepath(core:volume:name + ":" + filename). }
   }
-  copypath("0:" + filename, volume:name + ":" + filename).
+  copypath("0:" + filename, core:volume:name + ":" + filename).
 }
 
 // Put a file on KSC
@@ -27,7 +27,7 @@ FUNCTION UPLOAD {
     if not overwrite { return. }
     else { deletepath("0:" + filename). }
   }
-  copypath(volume:name + ":" + filename, "0:" + filename).
+  copypath(core:volume:name + ":" + filename, "0:" + filename).
 }
 
 function Require {
@@ -37,7 +37,7 @@ function Require {
     return True.
   }
   else if exists("0:" + filename) {
-    copypath("0:" + filename, core:volume:name + filename).
+    copypath("0:" + filename, core:volume:name + ":" + filename).
     if auto_run { runoncepath(filename). }
     return True.
   }
@@ -69,7 +69,7 @@ function Available_twr {
       else { set total_thrust to total_thrust + en:availablethrustat(pressure). }
     }
   }
-  return total_thrust/ship:mass.
+  return ((total_thrust/ship:mass)/10).
 }
 
 function Available_dv {
