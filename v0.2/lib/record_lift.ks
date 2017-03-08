@@ -9,7 +9,6 @@ function Launch {
   set runmode to "pre-launch".
   set message to "Beginning pre-launch checks".
   clearscreen.
-  sas on.
   rcs on.
   print "Pre-Launch calculations complete." at (5,4).
   print "Press 'enter' to being the launch countdown." at (5,5).
@@ -35,7 +34,7 @@ function Launch {
       set target_pitch to 90.
       set target_heading to launch_heading.
       lock steering to heading(target_heading, target_pitch).
-      set target_throttle to update_throttle(1.5).
+      set target_throttle to 1.
       lock throttle to target_throttle.
       if launch_target <> "" { set Target to Orbitable(launch_target). }
       stage.
@@ -45,27 +44,28 @@ function Launch {
     else if runmode = "liftoff" {
       if ship:airspeed > 50 {
         set message to "Begin trajectory guidance".
-        set runmode to "gravity turn".
+        set runmode to "initiate gravity turn".
       }
-      else if ship:altitude > 50 {
+      else if ship:altitude > 100 {
         set message to "Tower clear".
-        set target_heading to 88.
+        set target_throttle to update_throttle(1.5).
+        set target_pitch to 88.
       }
     }
     else if runmode = "initiate gravity turn" {
       set target_pitch to 85.
-      if (ship:altitude > 1000) or (ship:airspeed > 200) {
+      if (ship:altitude > 2000) or (ship:airspeed > 200) {
         set runmode to "gravity turn".
       }
     }
     else if runmode = "gravity turn" {
-      set target_pitch to ship:SRFPROGRADE:PITCH.
-      if (ship:altitude > 40000) {
+      set target_pitch to 90 - VANG(SHIP:UP:FOREVECTOR, SHIP:SRFPROGRADE:FOREVECTOR).
+      if (ship:altitude > 30000) {
         set runmode to "boost".
       }
     }
     else if runmode = "boost" {
-      set target_pitch to ship:PROGRADE:PITCH.
+      set target_pitch to 90 - VANG(SHIP:UP:FOREVECTOR, SHIP:PROGRADE:FOREVECTOR).
       if ship:orbit:apoapsis >= 100000 {
         break.
       }
@@ -76,7 +76,7 @@ function Launch {
     if log_out { update_log(verbose). }
     wait 0.1.
   }
-  local dv is CALC(Ship:Apoapsis,Ship:Apoapsis,Ship:Apoapsis) - CALC(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
+  local dv is ORBITAL_VELOCITY(Ship:Apoapsis,Ship:Apoapsis,Ship:Apoapsis) - ORBITAL_VELOCITY(Ship:Apoapsis,Ship:Periapsis,Ship:Apoapsis).
   set nd to node(time:seconds+eta:apoapsis,0,0,dv).
   add nd.
   if log_out {
@@ -95,7 +95,7 @@ function update_heading {
 function update_throttle {
   parameter target_twr is -1.
   if (runmode = "gravity turn") or (runmode = "boost") {
-    local twr is ((eta:apoapsis/-30) + 3).
+    local twr is max(((eta:apoapsis/-30) + 3), 0.5).
     return twr_throttle(twr).
   }
   else if (ship:Apoapsis > 95000) {
@@ -127,7 +127,7 @@ function update_display {
   print "Runmode: " + runmode at (5,4).
   print "Tgt_Heading: " + round(target_heading, 2) at (5,5).
   print "Tgt_Pitch: " + round(target_pitch, 2) at (5,6).
-  print "Tgt_Throttle: " + round(target_throttle, 2) at (5,7).
+  print "Tgt_Throttle: " + round(target_throttle, 3) at (5,7).
   print "Apoapsis: " + round(ship:orbit:apoapsis) at (5,8).
   print "Periapsis: " + round(ship:orbit:Periapsis) at (5,9).
   print "Available_twr: " + round(Available_twr(), 2) at (5,10).
@@ -167,4 +167,4 @@ function update_log {
   log output to "0:/ascent_telemetry.js".
 }
 
-Launch(True, 90, "", 2, True, True).
+Launch(True, False, 90, "", True, True).
